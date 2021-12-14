@@ -55,6 +55,7 @@ module.exports = async (request, response) => {
     }
 
     const message = request.body;
+    console.log('msg: ', message);
 
     if (message.type === InteractionType.PING) {
       console.log('Handling Ping request');
@@ -102,6 +103,7 @@ module.exports = async (request, response) => {
       console.error('Unknown Type');
       response.status(400).send({ error: 'Unknown Type' });
     }
+  } else {
+    return response.status(401).send({ error: 'No get allowed' });
   }
-  return response.status(401).send({ error: 'No get allowed' });
 };
