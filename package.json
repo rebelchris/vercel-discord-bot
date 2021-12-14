@@ -1,8 +1,12 @@
 {
   "name": "my-bot",
   "version": "1.0.0",
+  "scripts": {
+    "start": "node -r dotenv/config api/index.js"
+  },
   "dependencies": {
     "discord-interactions": "^2.0.2",
+    "dotenv": "^8.2.0",
     "raw-body": "^2.4.1"
   }
 }
