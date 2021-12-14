@@ -103,4 +103,5 @@ module.exports = async (request, response) => {
       response.status(400).send({ error: 'Unknown Type' });
     }
   }
+  return response.status(401).send({ error: 'No get allowed' });
 };
