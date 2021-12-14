@@ -5,14 +5,27 @@ const {
 } = require('discord-interactions');
 const getRawBody = require('raw-body');
 
+const SLAP_COMMAND = {
+  name: 'Slap',
+  description: 'Sometimes you gotta slap a person with a small trout',
+  options: [
+    {
+      name: 'user',
+      description: 'The user to slap',
+      type: 6,
+      required: true,
+    },
+  ],
+};
+
 const INVITE_COMMAND = {
   name: 'Invite',
   description: 'Get an invite link to add the bot to your server',
 };
 
-const HI_COMMAND = {
-  name: 'Hi',
-  description: 'Say hello!',
+const SUPPORT_COMMAND = {
+  name: 'Support',
+  description: 'Like this bot? Support me!',
 };
 
 const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${process.env.APPLICATION_ID}&scope=applications.commands`;
@@ -23,10 +36,8 @@ const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${process.env
  * @param {VercelResponse} response
  */
 module.exports = async (request, response) => {
-  console.log('request');
-  // Only respond to POST requests
+  console.log('got called');
   if (request.method === 'POST') {
-    // Verify the request
     const signature = request.headers['x-signature-ed25519'];
     const timestamp = request.headers['x-signature-timestamp'];
     const rawBody = await getRawBody(request);
@@ -43,23 +54,20 @@ module.exports = async (request, response) => {
       return response.status(401).send({ error: 'Bad request signature ' });
     }
 
-    // Handle the request
     const message = request.body;
 
-    // Handle PINGs from Discord
     if (message.type === InteractionType.PING) {
       console.log('Handling Ping request');
       response.send({
         type: InteractionResponseType.PONG,
       });
     } else if (message.type === InteractionType.APPLICATION_COMMAND) {
-      // Handle our Slash Commands
       switch (message.data.name.toLowerCase()) {
         case SLAP_COMMAND.name.toLowerCase():
           response.status(200).send({
             type: 4,
             data: {
-              content: 'Hello!',
+              content: `*<@${message.member.user.id}> slaps <@${message.data.options[0].value}> around a bit with a large trout*`,
             },
           });
           console.log('Slap Request');
@@ -73,6 +81,17 @@ module.exports = async (request, response) => {
             },
           });
           console.log('Invite request');
+          break;
+        case SUPPORT_COMMAND.name.toLowerCase():
+          response.status(200).send({
+            type: 4,
+            data: {
+              content:
+                "Thanks for using my bot! Let me know what you think on twitter (@IanMitchel1). If you'd like to contribute to hosting costs, you can donate at https://github.com/sponsors/ianmitchell",
+              flags: 64,
+            },
+          });
+          console.log('Support request');
           break;
         default:
           console.error('Unknown Command');
