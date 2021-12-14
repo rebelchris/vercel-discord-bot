@@ -23,6 +23,7 @@ const INVITE_URL = `https://discord.com/oauth2/authorize?client_id=${process.env
  * @param {VercelResponse} response
  */
 module.exports = async (request, response) => {
+  console.log('request');
   // Only respond to POST requests
   if (request.method === 'POST') {
     // Verify the request
